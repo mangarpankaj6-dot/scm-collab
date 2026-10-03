@@ -1,0 +1,70 @@
+
+package java_programs;
+
+import java.util.Scanner;
+public class Java_programs {
+
+    
+    public static void main(String[] args) {
+        Scanner sc =new Scanner(System.in);
+        
+        System.out.println("==== SIMPLE CALCULATER ====");
+        
+        System.out.print("Enter first number: ");
+        double num1 =sc.nextDouble() ;
+        
+        System.out.print("Enter second number: ");
+        double num2 = sc.nextDouble() ;
+        
+        System.out.println("\nSelect OPration:");
+        System.out.println("1. Addition (+)");
+        System.out.println("2. subtraction (-)");
+        System.out.println("3. Multipication (-)");
+        System.out.println("4. Divison (/)");
+        System.out.println("5. Modulus (%)");
+        
+        
+        System.out.print("Enter choice:");
+        int choice = sc.nextInt();
+        double result;
+        switch (choice){
+            case 1:
+                result = num1 + num2;
+                System.out.println("Addtion = "+ result);
+                break ;
+            case 2:
+                result = num1 - num2;
+                System.out.println("Subtraction = "+result);
+                break;
+            case 3:
+                result = num1 * num2; 
+                System.out.println("Multipliction = "+ result);
+                break;
+            case 4:
+                if (num2== 0){
+                    System.out.println("Error: cannot divide by zero.");
+                }else{
+                    result = num1 / num2 ;
+                    System.out.println("Divison ="+ result);
+                
+                }
+                break ;
+             case 5 :
+                 if (num2 == 0 ){
+                     System.out.println("Error: cannot modulus by zero.");
+                 } else{
+                    result = num1 % num2 ;
+                    System.out.println("Module ="+ result);
+                 }
+             break;
+             default:
+                 System.out.println("Invaild choice");
+                 
+        }
+        sc.close();
+                
+                
+      
+    }
+    
+}
