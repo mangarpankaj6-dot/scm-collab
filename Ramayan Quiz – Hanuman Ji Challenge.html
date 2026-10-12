@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ramayan Quiz – Hanuman Ji Challenge</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#fff3dc;--saffron:#ff9933;--deep:#7a1f06;--card:rgba(40,8,2,.72);--ok:#2e9e4f;--bad:#c62828;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{font-family:'Noto Serif Devanagari',Georgia,serif;color:var(--cream);background:#3a0d05;min-height:100vh;overflow-x:hidden;position:relative}
+.bg{position:fixed;inset:0;background:linear-gradient(180deg,#ffb347 0%,#ff7a18 28%,#b8330a 62%,#3a0d05 100%);z-index:0}
+.sun{position:absolute;top:8%;left:50%;width:min(60vw,340px);aspect-ratio:1;transform:translateX(-50%);border-radius:50%;background:radial-gradient(circle,#fff7c2 0%,#ffd95e 45%,rgba(255,200,80,0) 72%)}
+.om{position:absolute;top:10%;left:50%;transform:translateX(-50%);font-size:min(30vw,170px);color:rgba(122,31,6,.35);line-height:1}
+.mount{position:absolute;bottom:0;left:0;width:100%;height:42%}
+.wrap{position:relative;z-index:1;max-width:620px;margin:0 auto;padding:16px}
+h1{text-align:center;margin:8px 0 2px;font-size:clamp(22px,6vw,32px);text-shadow:0 2px 8px #000}
+.sub{text-align:center;opacity:.9;margin:0 0 14px;font-size:14px}
+.card{background:var(--card);border:1px solid rgba(255,153,51,.5);border-radius:18px;padding:18px;backdrop-filter:blur(4px)}
+.top{display:flex;justify-content:space-between;font-size:14px;margin-bottom:8px;gap:8px;flex-wrap:wrap}
+.prog{position:relative;height:14px;border-radius:9px;background:rgba(255,255,255,.18);margin:10px 0 16px}
+.prog i{position:absolute;left:0;top:0;bottom:0;border-radius:9px;background:linear-gradient(90deg,#ff9933,#ffd95e);transition:width .5s}
+.prog b{position:absolute;top:-9px;font-size:22px;transition:left .5s;transform:translateX(-50%)}
+.timer{height:5px;background:var(--saffron);border-radius:3px;margin-bottom:12px;transition:width 1s linear}
+.q{font-size:clamp(17px,4.6vw,21px);line-height:1.5;margin:6px 0 14px;font-weight:700}
+.opt{display:block;width:100%;text-align:left;margin:8px 0;padding:13px 14px;font:inherit;font-size:16px;color:var(--cream);background:rgba(255,153,51,.14);border:1.5px solid rgba(255,153,51,.6);border-radius:12px;cursor:pointer}
+.opt:hover:not(:disabled){background:rgba(255,153,51,.32)}
+.opt.ok{background:var(--ok);border-color:#8cf0a8}.opt.bad{background:var(--bad);border-color:#ff9a9a}.opt.gone{opacity:.2}
+.btn{font:inherit;font-size:16px;font-weight:700;padding:12px 22px;border-radius:30px;border:0;background:linear-gradient(#ffc15e,#ff8a1f);color:#4a1200;cursor:pointer}
+.btn.sm{padding:7px 14px;font-size:13px}.btn:disabled{opacity:.4}
+.c{text-align:center}.big{font-size:44px;margin:4px 0}.rule{font-size:14px;text-align:left;line-height:1.7;margin:12px 0}
+</style>
+</head>
+<body>
+<div class="bg">
+  <div class="sun"></div><div class="om">ॐ</div>
+  <svg class="mount" viewBox="0 0 800 300" preserveAspectRatio="none"><path d="M0 300V200L90 120 170 190 300 60 420 170 520 100 650 190 740 140 800 190V300Z" fill="#2a0903" opacity=".85"/><path d="M0 300V250L140 190 260 240 400 170 560 250 700 200 800 250V300Z" fill="#170401"/></svg>
+</div>
+<div class="wrap">
+  <h1>🚩 रामायण क्विज़ 🚩</h1>
+  <p class="sub">Jai Bajrangbali! Har level pichle se mushkil.</p>
+  <div class="card" id="box"></div>
+</div>
+<script>
+/* Format: [question, SAHI jawab, galat1, galat2, galat3]  — sabse aasaan se sabse mushkil order me likhein.
+   Aur questions add karne ke liye bas is array me naye rows jodein. */
+const Q=[
+["Ramayan ki rachna kisne ki?","Maharshi Valmiki","Tulsidas","Ved Vyas","Kalidas"],
+["Bhagwan Ram ke pita ka naam kya tha?","Raja Dashrath","Raja Janak","Raja Drupad","Raja Nal"],
+["Bhagwan Ram ki patni ka naam?","Sita","Urmila","Mandodari","Radha"],
+["Bhagwan Ram ka janm kahan hua?","Ayodhya","Mithila","Kishkindha","Lanka"],
+["Hanuman ji ke aaradhya dev kaun hain?","Shri Ram","Shri Krishna","Indra Dev","Brahma Ji"],
+["Ram ke saath vanvas jaane wale chhote bhai kaun the?","Lakshman","Bharat","Shatrughn","Vibhishan"],
+["Ravan ki nagri ka naam?","Lanka","Dwarka","Kishkindha","Hastinapur"],
+["Ram ko kitne saal ka vanvas mila?","14 saal","12 saal","10 saal","7 saal"],
+["Kaikeyi ko bhadkane wali dasi ka naam?","Manthara","Sumitra","Kausalya","Trijata"],
+["Hanuman ji ke pita (Vayu roop me) kaun mane jaate hain?","Pawan Dev","Agni Dev","Varun Dev","Surya Dev"],
+["Sita ji ke pita ka naam?","Raja Janak","Raja Dashrath","Raja Kekay","Raja Sugriv"],
+["Sita swayamvar me kiska dhanush tod kar Ram ne vivah jeeta?","Shiv ji ka","Vishnu ji ka","Indra ka","Parshuram ka sudarshan"],
+["Ram ko Tadaka vadh ke liye le jaane wale rishi kaun the?","Vishwamitra","Vashishth","Agastya","Bharadwaj"],
+["Ravan ne Sita haran ke liye kaun sa roop dharan kiya?","Sadhu","Vanar","Brahman balak","Kisan"],
+["Jatayu kaun the?","Gidh (vulture) raja","Vanar raja","Riksh raja","Naag raja"],
+["Shabri ne Ram ko kya khilaya?","Jhoothe ber","Aam","Kele","Jamun"],
+["Sugriv ke bade bhai ka naam?","Vali","Angad","Nal","Neel"],
+["Ravan ke bete Meghnad ka dusra naam?","Indrajit","Atikaya","Akshay Kumar","Prahasta"],
+["Ravan ke bhai jo Ram ki sharan me aaye?","Vibhishan","Kumbhakarna","Khar","Dushan"],
+["Hanuman ji ne Sita ji ko pehchan ke liye kya diya?","Ram ji ki angoothi","Ram ji ka dhanush","Lakshman ka baan","Ram ji ka mukut"],
+["Ram Setu ke nirman ke mukhya shilpkar vanar kaun the?","Nal","Jambavan","Angad","Sushen"],
+["Ramayan me kitne kand hain?","7","5","6","9"],
+["Hanuman ji ke guru kaun the, jinse unhone vidya li?","Surya Dev","Indra Dev","Brahma Ji","Narad Muni"],
+["Lakshman ko Meghnad ki shakti lagne par kaun si booti laayi gayi?","Sanjeevani","Ashwagandha","Brahmi","Tulsi"],
+["Lanka ke vaidya jinhone Sanjeevani ka pata bataya?","Sushen","Charak","Dhanvantari","Sushrut"],
+["Pushpak Viman Ravan se pehle kiska tha?","Kubera","Indra","Varun","Vayu"],
+["Mandodari ke pita ka naam?","Mayasur","Mahabali","Kumbhakarna","Sumali"],
+["Hanuman ji ko samudra par karte waqt parchhai se pakadne wali rakshasi?","Simhika","Surasa","Tadaka","Surpanakha"],
+["Jatayu ke bade bhai ka naam?","Sampati","Jambavan","Kabandh","Marich"],
+["Ahilya kiski patni thi, jinka Ram ne uddhar kiya?","Rishi Gautam","Rishi Atri","Rishi Kashyap","Rishi Jamadagni"],
+["Valmiki Ramayan me kitne shlok maane jaate hain?","Lagbhag 24,000","Lagbhag 10,000","Lagbhag 50,000","Lagbhag 1 lakh"]
+];
+const TITLES=["Vanar Sainik","Angad ke Saathi","Jambavan ke Shishya","Sugriv ke Mantri","Nal-Neel ke Sahayak","Lanka ke Yatri","Ashok Vatika ke Doot","Sanjeevani Vahak","Ram Bhakt Shiromani","Param Hanuman Bhakt"];
+const box=document.getElementById('box');
+let i,lives,score,fifty,left,tm,locked,best=0;
+try{best=+localStorage.getItem('rq_best')||0}catch(e){}
+const T=()=>TITLES[Math.min(Math.floor(i/3),9)];
+function shuf(a){for(let k=a.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[a[k],a[j]]=[a[j],a[k]]}return a}
+function start(){i=0;lives=3;score=0;fifty=2;box.innerHTML=`<div class="c"><div class="big">🙏</div><h2 style="margin:0">Hanuman Ji ki Pariksha</h2>
+<div class="rule">• ${Q.length} levels – har level pichle se kathin<br>• 3 jaan ❤️ – galat ya time khatam = 1 jaan kam, wahi level dobara<br>• 2 baar 50-50 lifeline<br>• Jaldi jawab do, zyada points pao<br>• Best score: ${best}</div>
+<button class="btn" onclick="show()">Jai Shri Ram – Shuru Karo</button></div>`}
+function show(){
+  const q=Q[i];locked=false;left=25;
+  const o=shuf(q.slice(1).map((t,k)=>({t,c:!k})));
+  const pct=(i/Q.length)*100;
+  box.innerHTML=`<div class="top"><span>Level ${i+1}/${Q.length}</span><span>${'❤️'.repeat(lives)}</span><span>⭐ ${score}</span></div>
+  <div class="c" style="font-size:13px;opacity:.85">${T()}</div>
+  <div class="prog"><i style="width:${pct}%"></i><b style="left:${Math.max(pct,2)}%">🚩</b></div>
+  <div class="timer" id="tb" style="width:100%"></div>
+  <div class="q">${q[0]}</div><div id="opts"></div>
+  <div class="c" style="margin-top:12px"><button class="btn sm" id="ff" onclick="useFifty()" ${fifty?'':'disabled'}>50-50 (${fifty})</button></div>`;
+  const d=document.getElementById('opts');
+  o.forEach(x=>{const b=document.createElement('button');b.className='opt';b.textContent=x.t;b.dataset.c=x.c?1:0;b.onclick=()=>pick(b);d.appendChild(b)});
+  clearInterval(tm);
+  tm=setInterval(()=>{left--;const tb=document.getElementById('tb');if(tb)tb.style.width=(left/25*100)+'%';if(left<=0){clearInterval(tm);pick(null)}},1000);
+}
+function useFifty(){
+  if(locked||!fifty)return;fifty--;
+  const bad=[...document.querySelectorAll('.opt')].filter(b=>b.dataset.c==='0');
+  shuf(bad).slice(0,2).forEach(b=>{b.classList.add('gone');b.disabled=true});
+  const f=document.getElementById('ff');f.textContent=`50-50 (${fifty})`;if(!fifty)f.disabled=true;
+}
+function pick(b){
+  if(locked)return;locked=true;clearInterval(tm);
+  document.querySelectorAll('.opt').forEach(x=>{x.disabled=true;if(x.dataset.c==='1')x.classList.add('ok')});
+  const right=b&&b.dataset.c==='1';
+  if(b&&!right)b.classList.add('bad');
+  if(right){score+=100+left*4+Math.floor(i/3)*10;i++}else lives--;
+  setTimeout(()=>{if(lives<=0)end(false);else if(i>=Q.length)end(true);else show()},1300);
+}
+function end(win){
+  if(score>best){best=score;try{localStorage.setItem('rq_best',best)}catch(e){}}
+  box.innerHTML=win?`<div class="c"><div class="big">🚩🙏🚩</div><h2>Jai Shri Ram! Aap jeet gaye!</h2><p>Hanuman ji aap se prasann hue.<br>Final score: <b>${score}</b></p><button class="btn" onclick="start()">Phir se khelo</button></div>`
+  :`<div class="c"><div class="big">🏔️</div><h2>Khel Samapt</h2><p>Aap Level <b>${i+1}</b> tak pahunche<br>Upadhi: <b>${T()}</b><br>Score: <b>${score}</b> • Best: ${best}</p><button class="btn" onclick="start()">Dobara Koshish Karo</button></div>`}
+start();
+</script>
+</body>
+</html>
